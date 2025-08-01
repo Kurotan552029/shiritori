@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>しりとり</h1>
+    <p id="previousWord"></p>
+    <input id="nextWordInput" type="text" />
+    <button id="nextWordSendButton">送信</button>
+
+
+    <script>
+        window.onload = async (event) => {
+            const response = await fetch("/shiritori", { method: "GET" });
+            const previousWord = await response.text();
+            const paragraph = document.querySelector("#previousWord");
+            paragraph.innerHTML = `前の単語: ${previousWord}`;
+        }
+
+        document.querySelector("#nextWordSendButton").onclick = async (event) => {
+            const nextWordInput = document.querySelector("#nextWordInput");
+            const nextWordInputText = nextWordInput.value;
+            const response = await fetch(
+                "/shiritori",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nextWord: nextWordInputText })
+                }
+            );
+
+            if (response.status !== 200) {
+                const errorJson = await response.text();
+                const error0bj = JSON.parse(errorJson);
+                alert(error0bj["errorMessage"]);
+            }
+
+            const previousword = await rensponse.text();
+
+            const paragraph = document.querySelector("#previousWord");
+            paragraph.innerHTML = `前の単語: ${previousWord}`;
+            nextWordInput.value = "";
+        }
+    </script>
+</body>
+
+</html>
