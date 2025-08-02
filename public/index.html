@@ -10,21 +10,34 @@
 
 <body>
     <h1>しりとり</h1>
+
+    <!-- 現在の単語を表示する場所　-->
     <p id="previousWord"></p>
+
+    <!-- 単語の入力欄　-->
     <input id="nextWordInput" type="text" />
+
+    <!-- 送信ボタン　-->
     <button id="nextWordSendButton">送信</button>
 
 
     <script>
+        // ページが読み込まれた時に実行される処理
         window.onload = async (event) => {
+            // サーバーからの現在の単語をGETで取得
             const response = await fetch("/shiritori", { method: "GET" });
             const previousWord = await response.text();
+
+            // 取得した単語をHTMLに表示
             const paragraph = document.querySelector("#previousWord");
             paragraph.innerHTML = `前の単語: ${previousWord}`;
         }
 
+        // 送信ボタンがクリックされたときの処理
         document.querySelector("#nextWordSendButton").onclick = async (event) => {
+            // 入力欄の要素を取得
             const nextWordInput = document.querySelector("#nextWordInput");
+            // 入力された単語を取得し、サーバーにPOSTリクエストを送信
             const nextWordInputText = nextWordInput.value;
             const response = await fetch(
                 "/shiritori",
@@ -35,22 +48,28 @@
                 }
             );
 
+            // ステータスコードでエラーをチェック
             if (response.status !== 200) {
                 const errorJson = await response.text();
                 const error0bj = JSON.parse(errorJson);
+
+                // エラーコード10001の場合はゲームオーバー画面にリダイレクト
                 if (error0bj.errorCode === "10001") {
                     window.location.href = "gameover.html";
+                    //その他のエラーの場合はエラーメッセージを表示    
                 } else {
                     const errorMessage = document.querySelector("#errorMessage");
                     errorMessage.textContent = error0bj.errorMessage;
                 }
-                return;
+                return; // 処理をここで終了(下の更新は行わない)
             }
+
+            // 成功時の処理(ここまできたら status === 200)
             const previousword = await rensponse.text();
 
             const paragraph = document.querySelector("#previousWord");
             paragraph.innerHTML = `前の単語: ${previousWord}`;
-            nextWordInput.value = "";
+            nextWordInput.value = "";   // 入力欄を空に戻す(リセット)
         }
     </script>
 </body>
