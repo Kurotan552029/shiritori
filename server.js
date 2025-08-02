@@ -1,7 +1,9 @@
 import { serveDir } from "jsr:@std/http/file-server";
 
+// 直前の単語を保持
 let previousWord = "しりとり";
 
+// localhostにDenoのHTTPサーバーを展開
 Deno.serve(async (_req) => {
     const pathname = new URL(_req.url).pathname;
     console.log(`pathname: ${pathname}`);
@@ -14,6 +16,7 @@ Deno.serve(async (_req) => {
         const requestJson = await _req.json();
         const nextWord = requestJson["nextWord"];
 
+        // 単語が2語以上であることの確認
         if (nextWord.length < 2) {
             return new Response(
                 JSON.stringify({
@@ -26,7 +29,9 @@ Deno.serve(async (_req) => {
                 },
             );
         }
+        // previousWordの末尾とnextWordの先頭が同一か確認
         if (previousWord.slice(-1) === nextWord.slice(0, 1)) {
+            // nextWordの末尾が「ん」であるかどうかの確認
             if (nextWord.slice(-1) === "ん") {
                 return new Response(
                     JSON.stringify({
@@ -38,10 +43,12 @@ Deno.serve(async (_req) => {
                         headers: { "Content-Type": "application/json" },
                     },
                 );
+                // 問題なければpreviousWordを更新して、現在の単語を返す
             } else {
                 previousWord = nextWord;
                 return new Response(previousWord);
             }
+            // 同一でない単語の入力時にエラーを返す
         } else {
             return new Response(
                 JSON.stringify({
@@ -56,12 +63,13 @@ Deno.serve(async (_req) => {
         }
     }
 
+    // HTMLやCSSなどの静的ファイルを配信する設定
     return serveDir(
         _req,
         {
-            fsRoot: "./public/",
-            urlRoot: "",
-            enableCors: true,
+            fsRoot: "./public/", // publicフォルダ内のファイルをルートとして使う
+            urlRoot: "", // URLのルートパス(空ならそのまま使う)
+            enableCors: true, // CORS(他のドメインからのアクセス)を許可する
         },
     );
 });

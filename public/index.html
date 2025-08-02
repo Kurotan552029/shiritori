@@ -38,9 +38,14 @@
             if (response.status !== 200) {
                 const errorJson = await response.text();
                 const error0bj = JSON.parse(errorJson);
-                alert(error0bj["errorMessage"]);
+                if (error0bj.errorCode === "10001") {
+                    window.location.href = "gameover.html";
+                } else {
+                    const errorMessage = document.querySelector("#errorMessage");
+                    errorMessage.textContent = error0bj.errorMessage;
+                }
+                return;
             }
-
             const previousword = await rensponse.text();
 
             const paragraph = document.querySelector("#previousWord");
