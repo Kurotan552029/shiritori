@@ -42,5 +42,13 @@ Denoを使って、バックエンドと通信しながらしりとりを続け�
 
 ## ディレクトリ構成
 
-. ├── vscode │ └── setting.json ├── public │ ├── gameover.html │ ├── index.html
-│ └── styles.css ├── README.md └── server.js
+```
+. ├── vscode 
+│ └── setting.json 
+├── public 
+│ ├── gameover.html 
+│ ├── index.html
+│ └── styles.css 
+├── README.md 
+└── server.js
+```
