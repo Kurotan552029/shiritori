@@ -20,6 +20,9 @@
     <!-- 送信ボタン　-->
     <button id="nextWordSendButton">送信</button>
 
+    <!-- エラーメッセージの表示　-->
+    <p id="errorMessage" style="color: red;"></p>
+
 
     <script>
         // ページが読み込まれた時に実行される処理
@@ -59,7 +62,9 @@
                     //その他のエラーの場合はエラーメッセージを表示    
                 } else {
                     const errorMessage = document.querySelector("#errorMessage");
-                    errorMessage.textContent = error0bj.errorMessage;
+                    if (errorMessage) {
+                        errorMessage.textContent = error0bj.errorMessage;
+                    }
                 }
                 return; // 処理をここで終了(下の更新は行わない)
             }
